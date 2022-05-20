@@ -56,6 +56,17 @@ class authController {
     }
   }
 
+  async logout(req, res) {
+    try {
+      req.session.destroy();
+      res.clearCookie('auth');
+      res.status(200).json({ message: 'Вы успешно вышли' });
+    } catch (e) {
+      console.log(e);
+      res.status(400).json({ message: 'Error' });
+    }
+  }
+
   // async createRole(req, res) {
   //   try {
   //     const teacherRole = new Role({ value: "TEACHER" });
@@ -65,7 +76,7 @@ class authController {
   //   } catch (e) {
   //
   //   }
-  // }
+  // } // для того что завести в базу дефолтные роли
 
 
 }

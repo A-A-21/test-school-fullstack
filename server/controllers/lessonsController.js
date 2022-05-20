@@ -1,5 +1,4 @@
 const Lesson = require('../models/Lesson');
-const User = require("../models/User");
 
 class lessonController {
 
@@ -34,8 +33,13 @@ class lessonController {
   async addLessons(req, res) {
     try {
       const { title, text } = req.body;
-      const useremail = req.session.email;
-      const lesson = new Lesson({ title, text, author: useremail });
+      const file = req.file ? `/img/${req.file.originalname}` : '';
+      const lesson = new Lesson({
+        title,
+        text,
+        author: req.session.email,
+        img: file,
+      });
       await lesson.save();
       return res.json({ message: "Вы успешно добавили новый урок", lesson });
     } catch (e) {
@@ -47,8 +51,19 @@ class lessonController {
   async editLessons(req, res) {
     try {
       const { id } = req.params;
-      console.log(req.params);
-      const lesson = await Lesson.findOne({ id });
+      const { title, text } = req.body;
+      const img = req.file?.originalname;
+      const useremail = req.session?.email;
+      const lesson = await Lesson.findOne({ _id: id });
+      if (useremail !== lesson.author[0]) {
+        return res.json({ message: 'Нет прав доступа' });
+      }
+      if (img) {
+        lesson.img = `/img/${req.file.originalname}`;
+      }
+      lesson.title = title;
+      lesson.text = text;
+      await lesson.save();
       return res.json({ message: "Держи", lesson });
     } catch (e) {
       console.log(e);

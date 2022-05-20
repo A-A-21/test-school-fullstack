@@ -10,5 +10,6 @@ router.post('/registration', [
   check('password', "Пароль должен быть больше 4 и меньше 10 символов").isLength({ min: 4, max: 10 })
 ], controller.registration);
 router.post('/login', controller.login);
+router.get('/logout', controller.logout);
 
 module.exports = router;
