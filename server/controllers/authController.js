@@ -27,7 +27,7 @@ class authController {
       req.session.roles = roles;
       req.session.email = useremail;
       let userRoles = (roles === 'TEACHER') ? true : null;
-      return res.json({ message: 'Пользователь успешно зарегистрирован', id: user.id, roles: userRoles });
+      return res.status(200).json({ message: 'Пользователь успешно зарегистрирован', id: user.id, roles: userRoles });
     } catch (e) {
       console.log(e);
       res.status(400).json({ message: 'Registration error' });
