@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import './index.css';
 import { Button, FormControl, FormHelperText, Input, InputLabel, MenuItem, Select } from "@mui/material";
+import { useDispatch } from "react-redux";
+import login from "../Login/Login";
 
 const Registration = () => {
   const [inputs, setInputs] = useState({});
-
+  const dispatch = useDispatch();
   console.log(inputs);
   const inputHandler = (e) => {
     setInputs((prev) => ({
@@ -25,9 +27,10 @@ const Registration = () => {
     });
     const data = await response.json();
     if (response.status === 400) {
-      return alert(data.message)
+      return alert(data.message);
     } else if (response.status === 200) {
-
+      const user = { id: data.id, roles: data.roles };
+      dispatch(login(user));
     }
   };
 

@@ -1,6 +1,6 @@
 export const allLessons = (lessons) => {
   return {
-    type: 'ALL POSTS',
+    type: 'ALL_LESSONS',
     payload: lessons,
   };
 };
