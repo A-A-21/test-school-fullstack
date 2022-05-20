@@ -27,7 +27,7 @@ app.use(session({
 }));
 
 app.use('/auth', authRouter);
-app.use('/lessons, lessonsRouter);
+app.use('/lessons', lessonsRouter);
 
 const start = async () => {
   try {

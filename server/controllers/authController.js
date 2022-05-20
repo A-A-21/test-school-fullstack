@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Role = require('../models/Role');
 const bcrypt = require('bcryptjs');
 
 const { validationResult } = require("express-validator");
@@ -8,19 +9,25 @@ class authController {
 
   async registration(req, res) {
     try {
+      console.log(req.body);
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({ message: "Ошибка при регистрации", errors });
       }
-      const { username, password } = req.body;
-      const candidate = await User.findOne({ username });
+      const { username, useremail, password, roles } = req.body;
+      const candidate = await User.findOne({ useremail });
       if (candidate) {
         return res.status(400).json({ message: 'Пользователь с таким именем уже существует' });
       }
       const hashPassword = bcrypt.hashSync(password, 9);
-      const user = new User({ username, password: hashPassword });
+      const userRole = await Role.findOne({ value: roles });
+      const user = new User({ username, useremail, password: hashPassword, roles: [userRole.value] });
       await user.save();
-      return res.json({ message: 'Пользователь успешно зарегистрирован' });
+      req.session.userId = user.id;
+      req.session.roles = roles;
+      req.session.email = useremail;
+      let userRoles = (roles === 'TEACHER') ? true : null;
+      return res.json({ message: 'Пользователь успешно зарегистрирован', id: user.id, roles: userRoles });
     } catch (e) {
       console.log(e);
       res.status(400).json({ message: 'Registration error' });
@@ -29,63 +36,37 @@ class authController {
 
   async login(req, res) {
     try {
-      const { username, password } = req.body;
-      const user = await User.findOne({ username });
+      const { useremail, password } = req.body;
+      const user = await User.findOne({ useremail });
       if (!user) {
-        return res.status(400).json({ message: `Пользователь ${username} не найден` });
+        return res.status(400).json({ message: `Пользователь ${useremail} не найден` });
       }
       const validPassword = bcrypt.compareSync(password, user.password);
       if (!validPassword) {
         return res.status(400).json({ message: `Введен неверный пароль` });
       }
-      const token = generateAccessToken(user._id);
-      return res.json({ token });
+      req.session.userId = user.id;
+      req.session.roles = user.roles;
+      req.session.email = useremail;
+      let userRoles = (user.roles === 'TEACHER') ? true : null;
+      return res.json({ message: 'Пользователь успешно авторизован', id: user.id, roles: userRoles });
     } catch (e) {
       console.log(e);
       res.status(400).json({ message: 'Login error' });
     }
   }
 
-  async getUsers(req, res) {
-    try {
-      console.log(req.user);
-      const users = await User.find();
-      const token = generateAccessToken(req.user._id);
-      res.json({ users, token });
-    } catch (e) {
-      console.log(e);
-      res.status(400).json({ message: 'error' });
-    }
-  }
+  // async createRole(req, res) {
+  //   try {
+  //     const teacherRole = new Role({ value: "TEACHER" });
+  //     const studentRole = new Role({ value: "STUDENT" });
+  //     await teacherRole.save();
+  //     await studentRole.save();
+  //   } catch (e) {
+  //
+  //   }
+  // }
 
-  async deleteUser(req, res) {
-    try {
-      const { id } = req.params;
-      const token = generateAccessToken(req.user._id);
-      await User.deleteOne({ id });
-      res.json({ message: "Пользователь успешно удалён" });
-    } catch (e) {
-      console.log(e);
-      res.status(400).json({ message: 'error' });
-    }
-  }
-
-  async changeUser(req, res) {
-    try {
-      const { username } = req.body;
-      const token = generateAccessToken(req.user._id);
-      const user = await User.findOne({ id: Number(req.params.id) });
-      if (!user) {
-        return res.status(400).json({ message: "Нет прав доступа" });
-      }
-      user.username = username;
-      await user.save();
-      return res.json({ message: "Вы успешно сменили username", token });
-    } catch (e) {
-      console.log(e);
-      res.status(400).json({ message: 'error' });
-    }
-  }
 
 }
 
