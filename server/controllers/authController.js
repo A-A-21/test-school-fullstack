@@ -48,7 +48,7 @@ class authController {
       req.session.userId = user.id;
       req.session.roles = user.roles;
       req.session.email = useremail;
-      let userRoles = (user.roles === 'TEACHER') ? true : null;
+      let userRoles = (user.roles[0] === 'TEACHER') ? true : null;
       return res.json({ message: 'Пользователь успешно авторизован', id: user.id, roles: userRoles });
     } catch (e) {
       console.log(e);

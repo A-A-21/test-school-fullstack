@@ -33,11 +33,6 @@ class lessonController {
 
   async addLessons(req, res) {
     try {
-      const roles = req.session?.roles;
-      console.log(roles);
-      if (roles[0] === 'STUDENT' || !roles) {
-        return res.json({ message: "Нет прав доступа" });
-      }
       const { title, text } = req.body;
       const useremail = req.session.email;
       const lesson = new Lesson({ title, text, author: useremail });
@@ -51,11 +46,10 @@ class lessonController {
 
   async editLessons(req, res) {
     try {
-      const roles = req.session?.roles;
-      if (roles[0] === 'STUDENT' || !roles) {
-        return res.json({ message: "Нет прав доступа" });
-      }
-      return res.json({ message: "Держи" });
+      const { id } = req.params;
+      console.log(req.params);
+      const lesson = await Lesson.findOne({ id });
+      return res.json({ message: "Держи", lesson });
     } catch (e) {
       console.log(e);
       res.status(400).json({ message: 'error' });
@@ -64,10 +58,6 @@ class lessonController {
 
   async deleteLessons(req, res) {
     try {
-      const roles = req.session?.roles;
-      if (roles[0] === 'STUDENT' || !roles) {
-        return res.json({ message: "Нет прав доступа" });
-      }
       return res.json({ message: "Держи" });
     } catch (e) {
       console.log(e);
