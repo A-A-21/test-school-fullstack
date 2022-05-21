@@ -9,7 +9,7 @@ class lessonController {
         return res.json({ message: "Сначала надо зарегистрироваться" });
       }
       const lessons = await Lesson.find();
-      res.json({ lessons });
+      res.json(lessons);
     } catch (e) {
       console.log(e);
       res.status(400).json({ message: 'error' });
@@ -32,6 +32,8 @@ class lessonController {
 
   async addLessons(req, res) {
     try {
+      console.log(req.body);
+      console.log(req.file);
       const { title, text } = req.body;
       const file = req.file ? `/img/${req.file.originalname}` : '';
       const lesson = new Lesson({
@@ -73,7 +75,14 @@ class lessonController {
 
   async deleteLessons(req, res) {
     try {
-      return res.json({ message: "Держи" });
+      const { id } = req.params;
+      const useremail = req.session?.email;
+      const lesson = await Lesson.findOne({ _id: id });
+      if (useremail !== lesson.author[0]) {
+        return res.json({ message: 'Нет прав доступа' });
+      }
+      await Lesson.deleteOne({ _id: id });
+      return res.sendStatus(201);
     } catch (e) {
       console.log(e);
       res.status(400).json({ message: 'error' });

@@ -27,7 +27,12 @@ class authController {
       req.session.roles = roles;
       req.session.email = useremail;
       let userRoles = (roles === 'TEACHER') ? true : null;
-      return res.status(200).json({ message: 'Пользователь успешно зарегистрирован', id: user.id, roles: userRoles });
+      return res.status(200).json({
+        message: 'Пользователь успешно зарегистрирован',
+        id: user.id,
+        roles: userRoles,
+        email: useremail
+      });
     } catch (e) {
       console.log(e);
       res.status(400).json({ message: 'Registration error' });
@@ -49,7 +54,7 @@ class authController {
       req.session.roles = user.roles;
       req.session.email = useremail;
       let userRoles = (user.roles[0] === 'TEACHER') ? true : null;
-      return res.json({ message: 'Пользователь успешно авторизован', id: user.id, roles: userRoles });
+      return res.json({ message: 'Пользователь успешно авторизован', id: user.id, roles: userRoles, email: useremail });
     } catch (e) {
       console.log(e);
       res.status(400).json({ message: 'Login error' });
@@ -61,6 +66,20 @@ class authController {
       req.session.destroy();
       res.clearCookie('auth');
       res.status(200).json({ message: 'Вы успешно вышли' });
+    } catch (e) {
+      console.log(e);
+      res.status(400).json({ message: 'Error' });
+    }
+  }
+
+  async check(req, res) {
+    try {
+      if (req.session?.userId) {
+        const user = { id: req.session.userId, roles: req.session.roles, email: req.session.email };
+        res.json(user);
+      } else {
+        res.json({ message: 'Надо авторизоваться' });
+      }
     } catch (e) {
       console.log(e);
       res.status(400).json({ message: 'Error' });

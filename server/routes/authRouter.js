@@ -4,6 +4,7 @@ const { check } = require("express-validator");
 // const authMiddleware = require('../middlewares/authMiddleware');
 
 
+router.get('/check', controller.check);
 router.post('/registration', [
   check('username', "Имя пользователя не может быть пустым").notEmpty(),
   check('useremail', "Email пользователя не может быть пустым").notEmpty(),
