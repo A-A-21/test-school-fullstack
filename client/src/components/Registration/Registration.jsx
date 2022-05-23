@@ -40,7 +40,7 @@ const Registration = () => {
   return (
     <div className="form">
 
-      <FormControl className="form_inputs" fullWidth>
+      <FormControl style={{ margin: "20px" }} className="form_inputs" fullWidth>
         <InputLabel id="demo-simple-select-label">Роль</InputLabel>
         <Select
           labelId="demo-simple-select-label"
@@ -53,21 +53,21 @@ const Registration = () => {
           <MenuItem value="STUDENT">Student</MenuItem>
         </Select>
       </FormControl>
-      <FormControl className="form_inputs">
+      <FormControl style={{ margin: "20px" }} className="form_inputs">
         <InputLabel htmlFor="my-input">Email</InputLabel>
         <Input name="useremail" value={inputs.useremail} onChange={inputHandler} id="my-input"
                aria-describedby="my-helper-text"/>
         <FormHelperText id="my-helper-text">We'll never share your email.</FormHelperText>
       </FormControl>
-      <FormControl className="form_inputs">
+      <FormControl style={{ margin: "20px" }} className="form_inputs">
         <InputLabel htmlFor="my-input">Name</InputLabel>
         <Input name="username" value={inputs.username} onChange={inputHandler} id="my-input"
                aria-describedby="my-helper-text"/>
         <FormHelperText id="my-helper-text">We'll never share your name.</FormHelperText>
       </FormControl>
-      <FormControl className="form_inputs">
+      <FormControl style={{ margin: "20px" }} className="form_inputs">
         <InputLabel htmlFor="my-input">Пароль</InputLabel>
-        <Input name="password" value={inputs.password} onChange={inputHandler} id="my-input"
+        <Input type="password" name="password" value={inputs.password} onChange={inputHandler} id="my-input"
                aria-describedby="my-helper-text"/>
         <FormHelperText id="my-helper-text">We'll never share your password.</FormHelperText>
       </FormControl>

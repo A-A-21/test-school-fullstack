@@ -51,7 +51,7 @@ class authController {
         return res.status(400).json({ message: `Введен неверный пароль` });
       }
       req.session.userId = user.id;
-      req.session.roles = user.roles;
+      req.session.roles = user.roles[0];
       req.session.email = useremail;
       let userRoles = (user.roles[0] === 'TEACHER') ? true : null;
       return res.json({ message: 'Пользователь успешно авторизован', id: user.id, roles: userRoles, email: useremail });
@@ -75,7 +75,8 @@ class authController {
   async check(req, res) {
     try {
       if (req.session?.userId) {
-        const user = { id: req.session.userId, roles: req.session.roles, email: req.session.email };
+        let userRoles = (req.session.roles === 'TEACHER') ? true : null;
+        const user = { id: req.session.userId, roles: userRoles, email: req.session.email };
         res.json(user);
       } else {
         res.json({ message: 'Надо авторизоваться' });

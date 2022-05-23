@@ -49,7 +49,8 @@ const Login = () => {
         </FormControl>
         <FormControl className="form_inputs">
           <InputLabel htmlFor="my-input">Пароль</InputLabel>
-          <Input name="password" onChange={inputHandler} id="my-input" aria-describedby="my-helper-text"/>
+          <Input type="password" name="password" onChange={inputHandler} id="my-input"
+                 aria-describedby="my-helper-text"/>
           <FormHelperText id="my-helper-text">We'll never share your email.</FormHelperText>
         </FormControl>
         <Button onClick={submitHandler} variant="contained">Contained</Button>

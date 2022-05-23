@@ -7,14 +7,24 @@ import { allLessons } from "../../redux/actions/lessonsAction";
 const LessonsList = () => {
   const [status, setStatus] = useState(true);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    fetch('/lessons').then(res => res.json()).then(data => dispatch(allLessons(data)));
+  }, []);
+
+
   const lessons = useSelector(state => state.lessons);
   const user = useSelector(state => state.user);
+
+  const [stateLessons, setStateLessons] = useState([]);
 
   useEffect(() => {
     if (lessons.length > 0) {
       setStatus(false);
+      setStateLessons(lessons);
     }
   }, [lessons]);
+
 
   return (
     <>
@@ -24,9 +34,10 @@ const LessonsList = () => {
         </Box>
         :
         <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
-          {lessons?.map((el) => (
-            <Lesson key={el._id} id={el._id} title={el.title} img={el.img}
-                    author={el.author[0]} user={user.email}
+          {stateLessons?.map((el) => (
+            <Lesson setStateLessons={setStateLessons} key={el._id} id={el._id}
+                    title={el.title} img={el.img}
+                    author={Array.isArray(el?.author) ? el.author[0] : ''} user={user?.email}
                     text={el.text}/>
           ))}
 

@@ -23,7 +23,7 @@ class lessonController {
         return res.json({ message: "Сначала надо зарегистрироваться" });
       }
       const lesson = await Lesson.findOne({ id: Number(req.params.id) });
-      res.json({ lesson });
+      res.json(lesson);
     } catch (e) {
       console.log(e);
       res.status(400).json({ message: 'error' });
@@ -32,8 +32,6 @@ class lessonController {
 
   async addLessons(req, res) {
     try {
-      console.log(req.body);
-      console.log(req.file);
       const { title, text } = req.body;
       const file = req.file ? `/img/${req.file.originalname}` : '';
       const lesson = new Lesson({

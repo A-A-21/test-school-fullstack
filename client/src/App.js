@@ -33,7 +33,7 @@ function App() {
         <Route path="/registration" element={<Registration/>}></Route>
         <Route path="/login" element={<Login/>}></Route>
       </Routes>
-      {user?.message ? (<><Login/></>) :
+      {user?.message ? (<>Надо авторизоваться</>) :
         <>
           <Routes>
             <Route path="/details/:id" element={<LessonsDetails/>}></Route>
